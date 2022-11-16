@@ -13,25 +13,34 @@
         <table>
             <tr>
                 <th> Name </th>
+                <th> Image </th>
                 <th> Id </th>
             </tr>
         <?php 
             $page = file_get_contents('https://pokeapi.co/api/v2/pokemon/');
             $page = json_decode($page);
-            $id = 0;
             foreach($page->results as $pokemon){
-                //$poke = file_get_contents($pokemon('url'));
-                //$poke = json_decode($poke,true);
+                //get the id of each pokemon
+                $url = $pokemon->url;
+                $values = parse_url($url);
+                $pokemonId = explode('/',$values['path'])[4];
+
+                //gets the image ("sprite") of the pokemon
+                $basePokemonPage = 'https://pokeapi.co/api/v2/pokemon/';
+                $pokemonPage = $basePokemonPage.$pokemonId;
+                $image = file_get_contents($pokemonPage);
+                $image = json_decode($image);
+
                 ?>
                 
                 <tr>
                 <td> <?php echo $pokemon->name; ?> </td>;
-                <td> <?php echo $id; ?> </td>;
+                <td> <img src=<?php echo $image->sprites->front_default; ?> /> </td>;
+                <td> <?php echo $pokemonId; ?> </td>;
                 </tr>
                 <?php
-                $id++;
             }
-           
+            
         ?>
     </body>
 </html>
